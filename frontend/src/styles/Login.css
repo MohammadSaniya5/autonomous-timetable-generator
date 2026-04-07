@@ -1,0 +1,140 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.login-container {
+  display: flex;
+  height: 100vh;
+}
+ 
+.login-left {
+  width: 50%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+ 
+.login-left video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+ 
+.login-left::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35); 
+  z-index: 1;
+}
+ 
+.left-content {
+  position: relative;
+  z-index: 2; 
+  max-width: 420px;
+  text-align: left;
+  animation: slideInLeft 1s ease forwards;
+  opacity: 0;
+}
+
+.left-content h1 {
+  font-size: 42px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  animation: fadeUp 1s 0.3s ease forwards;
+  opacity: 0;
+}
+
+.left-content p {
+  font-size: 18px;
+  margin: 8px 0;
+  animation: fadeUp 1s 0.6s ease forwards;
+  opacity: 0.85;
+}
+ 
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+ 
+.login-right {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.login-form {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+  color: #203a43;
+  font-weight: 600;
+  text-align: center;
+}
+ 
+.login-form input {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  padding: 12px 5px;
+  margin-bottom: 30px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.login-form input:focus {
+  border-bottom: 2px solid #2c5364;
+}
+ 
+.login-form button {
+  width: 100%;
+  padding: 12px;
+  background: #2c5364;
+  color: white;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-form button:hover {
+  background: #203a43;
+}

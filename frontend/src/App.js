@@ -107,19 +107,6 @@ function App() {
 
   };
 
-  function editTimeslot(id) {
-
-    const slot = timeslots.find(s => s.id === id)
-
-    if (!slot) return
-
-    setSlotTime(slot.slot_time)
-    setRoomType(slot.slot_type)
-
-    setEditTimeslotId(id)
-    setIsEditingTimeslot(true)
-
-  }
   const fetchFullTimetable = async () => {
 
     if (!selectedYear) {
@@ -773,7 +760,7 @@ function App() {
 
           {page === "faculty" && (
 
-            <div class="page landscape-print">
+            <div className="page landscape-print">
               <div className="faculty-page">
 
                 <h2>Faculty Management</h2>
@@ -1007,7 +994,7 @@ function App() {
           {page === "subjects" && (
 
             <div className="subjects-page">
-              <div class="page landscape-print">
+              <div className="page landscape-print">
                 <h2>Subject Management</h2>
 
                 <div className="form-row">
@@ -1046,7 +1033,7 @@ function App() {
                     <option value="">Select Section</option>
 
                     {sections
-                      .filter(s => s.year == year)
+                      .filter(s => s.year === year)
                       .map((s) => (
                         <option key={s.id} value={s.id}>
                           {s.section_name}
@@ -1318,7 +1305,7 @@ function App() {
 
               </div>
               <hr style={{ margin: "30px 0" }} />
-              <div class="page landscape-print">
+              <div className="page landscape-print">
                 <h2>View Timetable</h2>
                 <p>Select year and section to view timetable.</p>
                 <div className="form-row">
@@ -1339,7 +1326,7 @@ function App() {
                     <option value="">Select Section</option>
 
                     {sections
-                      .filter(s => s.year == year)
+                      .filter(s => s.year === year)
                       .map((s) => (
                         <option key={s.id} value={s.id}>
                           {s.section_name}
@@ -1362,12 +1349,12 @@ function App() {
                     <h2>REGULAR TIMETABLE</h2>
                     <h4>
                       Year: {year} | Section: {
-                        sections.find(s => s.id == selectedSection)?.section_name || ""
+                        sections.find(s => s.id === selectedSection)?.section_name || ""
                       }
                     </h4>
                     <h3>
                       Room No: {
-                        sections.find(s => s.id == selectedSection)?.classroom || ""
+                        sections.find(s => s.id === selectedSection)?.classroom || ""
                       }
                     </h3>
                   </div>
@@ -1476,7 +1463,7 @@ function App() {
 
                                 }
 
-                                const currentSection = sections.find(s => s.id == selectedSection);
+                                const currentSection = sections.find(s => s.id === selectedSection);
 
                                 const isLab =
                                   entry.subject_type === "lab" ||
@@ -1544,7 +1531,7 @@ function App() {
                   <option value="">Select Section</option>
 
                   {sections
-                    .filter(s => s.year == year)
+                    .filter(s => s.year === year)
                     .map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.section_name}

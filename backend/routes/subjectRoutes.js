@@ -3,7 +3,6 @@ const router = express.Router();
 const db = require("../db");
 console.log("Subject routes loaded"); 
 router.post("/addSubject", (req, res) => {
-
     const { name, weekly_hours, faculty_id, section_id, subject_type, year } = req.body;
 
     db.query(
@@ -12,19 +11,16 @@ router.post("/addSubject", (req, res) => {
 VALUES (?,?,?,?,?,?)`,
         [name, weekly_hours, faculty_id, section_id, subject_type, year],
         (err, result) => {
-
             if (err) {
                 console.log(err);
-                res.send("Error adding subject");
+                res.status(500).json({ error: "Error adding subject" });
             } else {
-                res.send("Subject added");
+                res.json({ message: "Subject added" });
             }
-
         });
-
 });
-router.get("/getSubjects", (req, res) => {
 
+router.get("/getSubjects", (req, res) => {
     const sql = `
 SELECT 
 subjects.id,
@@ -42,20 +38,17 @@ JOIN sections ON subjects.section_id = sections.id
 `;
 
     db.query(sql, (err, result) => {
-
         if (err) {
-            res.send("Error fetching subjects");
+            console.log(err);
+            res.status(500).json({ error: "Error fetching subjects" });
         } else {
             res.json(result);
         }
-
     });
-
 });
+
 router.put("/updateSubject/:id", (req, res) => {
-
     const id = req.params.id;
-
     const { name, weekly_hours, faculty_id, section_id, subject_type, year } = req.body;
 
     db.query(
@@ -64,42 +57,32 @@ SET name=?, weekly_hours=?, faculty_id=?, section_id=?, subject_type=?, year=?
 WHERE id=?`,
         [name, weekly_hours, faculty_id, section_id, subject_type, year, id],
         (err, result) => {
-
             if (err) {
                 console.log(err);
-                res.status(500).send("Error updating subject");
+                res.status(500).json({ error: "Error updating subject" });
             } else {
-                res.send("Subject updated successfully");
+                res.json({ message: "Subject updated successfully" });
             }
-
         });
+});
 
-}); 
 router.delete("/deleteSubject/:id", (req, res) => {
-
     const id = req.params.id;
 
     db.query(
         "DELETE FROM subjects WHERE id = ?",
         [id],
         (err, result) => {
-
             if (err) {
                 console.log(err);
-                res.send("Error deleting subject");
-            }
-            else {
-
+                res.status(500).json({ error: "Error deleting subject" });
+            } else {
                 if (result.affectedRows === 0) {
-                    res.send("Subject not found");
+                    res.json({ error: "Subject not found" });
                 } else {
-                    res.send("Subject deleted successfully");
+                    res.json({ message: "Subject deleted successfully" });
                 }
-
             }
-
         });
-
 });
-
 module.exports = router;

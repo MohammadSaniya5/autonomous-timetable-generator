@@ -58,7 +58,7 @@ function App() {
 
     const data = await res.json();
 
-    setFacultyList(data);
+    setFacultyList(Array.isArray(data) ? data : []);
 
   };
   const addFaculty = async () => {
@@ -384,22 +384,32 @@ function App() {
 
   };
   const fetchSubjects = async () => {
+  try {
+    const res = await fetch("https://autonomous-timetable-generator.onrender.com/api/getSubjects");
+
+    const text = await res.text(); // 👈 important
+
+    let data;
     try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.error("Not JSON response:", text);
+      setSubjects([]);
+      return;
+    }
 
-      const res = await fetch("https://autonomous-timetable-generator.onrender.com/api/getSubjects");
-      const data = await res.json();
-
-      if (Array.isArray(data)) {
-        setSubjects(data);
-      } else {
-        setSubjects([]);
-      }
-
-    } catch (error) {
-      console.log("Error fetching subjects:", error);
+    if (Array.isArray(data)) {
+      setSubjects(data);
+    } else {
+      console.error("Invalid data format:", data);
       setSubjects([]);
     }
-  };
+
+  } catch (error) {
+    console.log("Error fetching subjects:", error);
+    setSubjects([]);
+  }
+};
   const addSubject = async () => {
 
     if (!subjectName || !facultyId || !sectionId || !weeklyHours) {

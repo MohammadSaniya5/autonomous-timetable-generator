@@ -1,17 +1,18 @@
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
-  host: "localhost",
+  host: "maglev.proxy.rlwy.net",
   user: "root",
-  password: "",
-  database: "timetable_system"
+  password: "fcnhfjZDWaHWVmnUlxYxKqHcSkQMcgMy",
+  database: "railway",
+  port: 18677
 });
 
 db.connect((err) => {
   if (err) {
-    console.log("❌ Database connection failed");
+    console.log("❌ Database connection failed", err);
   } else {
-    console.log("✅ Connected to MySQL database");
+    console.log("✅ Connected to Railway MySQL database");
   }
 });
 

@@ -13,10 +13,8 @@ function App() {
   const [roomName, setRoomName] = useState("");
   const [capacity, setCapacity] = useState("");
   const [roomType, setRoomType] = useState("");
-  const [day, setDay] = useState("");
   const [slotTime, setSlotTime] = useState("");
-  const [timeslots, setTimeslots] = useState([]);
-  const [timetable, setTimetable] = useState([]);
+  const [timeslots, setTimeslots] = useState([]); 
   const [sectionName, setSectionName] = useState("");
   const [sections, setSections] = useState([]);
   const [sectionEditId, setSectionEditId] = useState(null);
@@ -39,8 +37,7 @@ function App() {
   const [classroom, setClassroom] = useState("");
   const [labRoom, setLabRoom] = useState("");
   const [subjectType, setSubjectType] = useState("theory");
-  const [year, setYear] = useState("");
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [year, setYear] = useState(""); 
   const [editableTimetable, setEditableTimetable] = useState([]);
   const [masterTimetable, setMasterTimetable] = useState([])
   const [editTimeslotId, setEditTimeslotId] = useState(null)

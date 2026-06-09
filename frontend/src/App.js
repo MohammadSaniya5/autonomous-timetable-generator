@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import Login from "./pages/Login";
@@ -13,8 +12,10 @@ function App() {
   const [roomName, setRoomName] = useState("");
   const [capacity, setCapacity] = useState("");
   const [roomType, setRoomType] = useState("");
+  const [day, setDay] = useState("");
   const [slotTime, setSlotTime] = useState("");
-  const [timeslots, setTimeslots] = useState([]); 
+  const [timeslots, setTimeslots] = useState([]);
+  const [timetable, setTimetable] = useState([]);
   const [sectionName, setSectionName] = useState("");
   const [sections, setSections] = useState([]);
   const [sectionEditId, setSectionEditId] = useState(null);
@@ -37,7 +38,8 @@ function App() {
   const [classroom, setClassroom] = useState("");
   const [labRoom, setLabRoom] = useState("");
   const [subjectType, setSubjectType] = useState("theory");
-  const [year, setYear] = useState(""); 
+  const [year, setYear] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
   const [editableTimetable, setEditableTimetable] = useState([]);
   const [masterTimetable, setMasterTimetable] = useState([])
   const [editTimeslotId, setEditTimeslotId] = useState(null)
@@ -54,16 +56,16 @@ function App() {
   };
   const fetchFaculty = async () => {
 
-    const res = await fetch("https://autonomous-timetable-generator.onrender.com/api/getFaculty");
+    const res = await fetch("http://localhost:5000/api/getFaculty");
 
     const data = await res.json();
 
-    setFacultyList(Array.isArray(data) ? data : []);
+    setFacultyList(data);
 
   };
   const addFaculty = async () => {
 
-    const response = await fetch("https://autonomous-timetable-generator.onrender.com/api/addFaculty", {
+    const response = await fetch("http://localhost:5000/api/addFaculty", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -97,7 +99,7 @@ function App() {
   };
   const fetchTimeslots = async () => {
 
-    const res = await fetch("https://autonomous-timetable-generator.onrender.com/api/getTimeslots");
+    const res = await fetch("http://localhost:5000/api/getTimeslots");
 
     const data = await res.json();
 
@@ -113,7 +115,7 @@ function App() {
     }
 
     const res = await fetch(
-      `https://autonomous-timetable-generator.onrender.com/api/getFullTimetable?year=${selectedYear}`
+      `http://localhost:5000/api/getFullTimetable?year=${selectedYear}`
     );
 
     const result = await res.json();
@@ -124,7 +126,7 @@ function App() {
   };
   const updateFaculty = async () => {
 
-    await fetch(`https://autonomous-timetable-generator.onrender.com/api/updateFaculty/${editId}`, {
+    await fetch(`http://localhost:5000/api/updateFaculty/${editId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -149,7 +151,7 @@ function App() {
   };
   const deleteSection = async (id) => {
 
-    const res = await fetch(`https://autonomous-timetable-generator.onrender.com/api/deleteSection/${id}`, {
+    const res = await fetch(`http://localhost:5000/api/deleteSection/${id}`, {
       method: "DELETE"
     });
 
@@ -172,7 +174,7 @@ function App() {
   };
   const updateSection = async () => {
 
-    await fetch(`https://autonomous-timetable-generator.onrender.com/api/updateSection/${sectionEditId}`, {
+    await fetch(`http://localhost:5000/api/updateSection/${sectionEditId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -193,7 +195,7 @@ function App() {
 
   };
   const fetchFacultyDropdown = async () => {
-    const res = await fetch("https://autonomous-timetable-generator.onrender.com/api/getFaculty");
+    const res = await fetch("http://localhost:5000/api/getFaculty");
     const data = await res.json();
     setFacultyDropdown(data);
   };
@@ -244,7 +246,7 @@ function App() {
       return;
     }
     const res = await fetch(
-      `https://autonomous-timetable-generator.onrender.com/api/getStudentTimetable/${selectedSection}?year=${year}`
+      `http://localhost:5000/api/getStudentTimetable/${selectedSection}?year=${year}`
     );
 
     const data = await res.json();
@@ -278,7 +280,7 @@ function App() {
   };
   const addRoom = async () => {
 
-    const response = await fetch("https://autonomous-timetable-generator.onrender.com/api/addRoom", {
+    const response = await fetch("http://localhost:5000/api/addRoom", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -299,7 +301,7 @@ function App() {
   };
   const addSection = async () => {
 
-    const response = await fetch("https://autonomous-timetable-generator.onrender.com/api/addSection", {
+    const response = await fetch("http://localhost:5000/api/addSection", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -323,7 +325,7 @@ function App() {
   };
   const fetchSections = async () => {
 
-    const res = await fetch("https://autonomous-timetable-generator.onrender.com/api/getSections");
+    const res = await fetch("http://localhost:5000/api/getSections");
 
     const data = await res.json();
 
@@ -372,7 +374,7 @@ function App() {
   }, [page]);
   const deleteFaculty = async (id) => {
 
-    const res = await fetch(`https://autonomous-timetable-generator.onrender.com/api/deleteFaculty/${id}`, {
+    const res = await fetch(`http://localhost:5000/api/deleteFaculty/${id}`, {
       method: "DELETE"
     });
 
@@ -384,32 +386,22 @@ function App() {
 
   };
   const fetchSubjects = async () => {
-  try {
-    const res = await fetch("https://autonomous-timetable-generator.onrender.com/api/getSubjects");
-
-    const text = await res.text(); // 👈 important
-
-    let data;
     try {
-      data = JSON.parse(text);
-    } catch (err) {
-      console.error("Not JSON response:", text);
-      setSubjects([]);
-      return;
-    }
 
-    if (Array.isArray(data)) {
-      setSubjects(data);
-    } else {
-      console.error("Invalid data format:", data);
+      const res = await fetch("http://localhost:5000/api/getSubjects");
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setSubjects(data);
+      } else {
+        setSubjects([]);
+      }
+
+    } catch (error) {
+      console.log("Error fetching subjects:", error);
       setSubjects([]);
     }
-
-  } catch (error) {
-    console.log("Error fetching subjects:", error);
-    setSubjects([]);
-  }
-};
+  };
   const addSubject = async () => {
 
     if (!subjectName || !facultyId || !sectionId || !weeklyHours) {
@@ -417,7 +409,7 @@ function App() {
       return;
     }
 
-    const res = await fetch("https://autonomous-timetable-generator.onrender.com/api/addSubject", {
+    const res = await fetch("http://localhost:5000/api/addSubject", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -447,7 +439,7 @@ function App() {
   const updateSubject = async () => {
 
     const res = await fetch(
-      `https://autonomous-timetable-generator.onrender.com/api/updateSubject/${editId}`,
+      `http://localhost:5000/api/updateSubject/${editId}`,
       {
         method: "PUT",
         headers: {
@@ -495,7 +487,7 @@ function App() {
 
     if (!window.confirm("Delete this subject?")) return;
 
-    await fetch(`https://autonomous-timetable-generator.onrender.com/api/deleteSubject/${id}`, {
+    await fetch(`http://localhost:5000/api/deleteSubject/${id}`, {
       method: "DELETE"
     });
 
@@ -514,7 +506,7 @@ function App() {
     try {
 
       const res = await fetch(
-        "https://autonomous-timetable-generator.onrender.com/api/updateTimetable",
+        "http://localhost:5000/api/updateTimetable",
         {
           method: "POST",
           headers: {
@@ -549,7 +541,7 @@ function App() {
     try {
 
       const res = await fetch(
-        `https://autonomous-timetable-generator.onrender.com/api/getStudentTimetable/${selectedSection}?year=${year}`
+        `http://localhost:5000/api/getStudentTimetable/${selectedSection}?year=${year}`
       );
 
       const data = await res.json();
@@ -587,7 +579,7 @@ function App() {
       return;
     }
 
-    await fetch("https://autonomous-timetable-generator.onrender.com/api/addTimeslot", {
+    await fetch("http://localhost:5000/api/addTimeslot", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -609,7 +601,7 @@ function App() {
   const updateTimeslot = async () => {
 
     await fetch(
-      `https://autonomous-timetable-generator.onrender.com/api/updateTimeslot/${editTimeslotId}`,
+      `http://localhost:5000/api/updateTimeslot/${editTimeslotId}`,
       {
         method: "PUT",
         headers: {
@@ -635,7 +627,7 @@ function App() {
   }
   const deleteTimeslot = async (id) => {
 
-    await fetch(`https://autonomous-timetable-generator.onrender.com/api/deleteTimeslot/${id}`, {
+    await fetch(`http://localhost:5000/api/deleteTimeslot/${id}`, {
       method: "DELETE"
     });
 
@@ -660,7 +652,7 @@ function App() {
     try {
 
       await fetch(
-        `https://autonomous-timetable-generator.onrender.com/api/generateTimetable?year=${year}`
+        `http://localhost:5000/api/generateTimetable?year=${year}`
       );
 
       showNotification("Timetable generated successfully");
@@ -1041,7 +1033,7 @@ function App() {
                     <option value="">Select Section</option>
 
                     {sections
-                      .filter(s => s.year === year)
+                      .filter(s => Number(s.year) === Number(year))
                       .map((s) => (
                         <option key={s.id} value={s.id}>
                           {s.section_name}
@@ -1334,7 +1326,7 @@ function App() {
                     <option value="">Select Section</option>
 
                     {sections
-                      .filter(s => s.year === year)
+                      .filter(s => Number(s.year) === Number(year))
                       .map((s) => (
                         <option key={s.id} value={s.id}>
                           {s.section_name}
@@ -1539,7 +1531,7 @@ function App() {
                   <option value="">Select Section</option>
 
                   {sections
-                    .filter(s => s.year === year)
+                    .filter(s => Number(s.year) === Number(year))
                     .map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.section_name}
